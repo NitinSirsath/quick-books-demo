@@ -14,6 +14,7 @@ import {
   Box,
   CircularProgress,
   Grid,
+  Chip,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import JournalEntries from "./JournalEntries";
@@ -100,12 +101,10 @@ const PayrollTable = () => {
           <input type="file" accept=".csv" hidden onChange={handleFileUpload} />
         </Button>
       </div>
-      {selectedFileName && (
-        <Typography variant="body1" sx={{ mt: 1 }}>
-          Selected file: {selectedFileName}
-        </Typography>
-      )}
 
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        {selectedFileName && <Chip label={selectedFileName} />}
+      </div>
       <TableContainer component={Paper} sx={{ mt: 2 }}>
         <Table>
           <TableHead>
