@@ -1,10 +1,16 @@
-import "./App.css";
+// import "./App.css";
 import PayrollTable from "./components/PayrollTable";
+import PrimarySearchAppBar from "./components/PrimarySearchAppBar";
 
 function App() {
   return (
     <>
-      <PayrollTable />
+      <div style={{ marginBottom: "10px" }}>
+        <PrimarySearchAppBar />
+      </div>
+      <div style={{ padding: "10px" }}>
+        <PayrollTable />
+      </div>
       {/* <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />

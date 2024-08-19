@@ -13,9 +13,11 @@ import {
   Typography,
   Box,
   CircularProgress,
+  Grid,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import JournalEntries from "./JournalEntries";
+import Logo from "../assets/logo.png"; // Assuming you have saved the logo
 
 const initialPayrollData = [
   {
@@ -51,7 +53,6 @@ const initialPayrollData = [
     taxes: 120,
     status: "Waiting to process",
   },
-  // Add more rows as needed
 ];
 
 const PayrollTable = () => {
@@ -59,19 +60,22 @@ const PayrollTable = () => {
   const [openModal, setOpenModal] = useState(false);
   const [processingId, setProcessingId] = useState<number | null>(null);
   const [showInfo, setShowInfo] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState("");
+  const [loadingState, setLoadingState] = useState(true);
 
   const handleProcessClick = (id: number) => {
     setProcessingId(id);
     setOpenModal(true);
+    setLoadingState(true);
     setTimeout(() => {
       setPayrollData((prevData) =>
         prevData.map((row) =>
           row.id === id ? { ...row, status: "Processed" } : row
         )
       );
-      setOpenModal(false);
+      setLoadingState(false);
       setProcessingId(null);
-    }, 3000); // Simulate progress
+    }, 3000);
   };
 
   const handleInfoClick = () => {
@@ -82,9 +86,27 @@ const PayrollTable = () => {
     setShowInfo(false);
   };
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedFileName(event.target.files[0].name);
+    }
+  };
+
   return (
     <>
-      <TableContainer component={Paper}>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="contained" component="label" sx={{ mb: 2 }}>
+          Upload CSV from Kelio
+          <input type="file" accept=".csv" hidden onChange={handleFileUpload} />
+        </Button>
+      </div>
+      {selectedFileName && (
+        <Typography variant="body1" sx={{ mt: 1 }}>
+          Selected file: {selectedFileName}
+        </Typography>
+      )}
+
+      <TableContainer component={Paper} sx={{ mt: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -149,20 +171,50 @@ const PayrollTable = () => {
             alignItems: "center",
             justifyContent: "center",
             height: "100vh",
-            background: "#171A1C",
+            background: "rgba(0, 0, 0, 0.5)",
           }}
         >
-          <Box sx={{ textAlign: "center" }}>
-            <CircularProgress />
-            <Typography variant="h6" sx={{ mt: 2 }}>
-              Journal entry created : Status - success
+          <Box
+            sx={{
+              textAlign: "left",
+              background: "#fff",
+              p: 3,
+              borderRadius: 2,
+              maxWidth: 400,
+              width: "100%",
+            }}
+          >
+            <Typography sx={{ color: "black", mb: 2 }} variant="h6">
+              Connecting to QAD:
+              {loadingState ? (
+                <CircularProgress size={20} sx={{ ml: 1 }} />
+              ) : (
+                " Success"
+              )}
+            </Typography>
+            <Typography sx={{ color: "black", mb: 2 }} variant="h6">
+              Writing Journal entry:
+              {loadingState ? (
+                <CircularProgress size={20} sx={{ ml: 1 }} />
+              ) : (
+                " Success"
+              )}
+            </Typography>
+            <Typography sx={{ color: "black", mb: 2 }} variant="h6">
+              Checking any errors:
+              {loadingState ? (
+                <CircularProgress size={20} sx={{ ml: 1 }} />
+              ) : (
+                " No errors found"
+              )}
             </Typography>
             <Button
-              sx={{ textTransform: "none", mt: 2 }}
-              variant="contained"
+              sx={{ textTransform: "none", mt: 2, width: "100%" }}
+              variant="outlined"
               onClick={() => setOpenModal(false)}
+              disabled={loadingState}
             >
-              Ok
+              Close
             </Button>
           </Box>
         </Box>
@@ -172,14 +224,17 @@ const PayrollTable = () => {
       <Modal open={showInfo} onClose={closeInfo}>
         <Box
           sx={{
-            // p: 4,
+            p: 4,
             backgroundColor: "white",
             margin: "auto",
             mt: 10,
             width: "80%",
-            borderRadius: 8,
+            borderRadius: 2,
           }}
         >
+          <Typography sx={{ color: "black" }} variant="h4">
+            Data from QAD
+          </Typography>
           <JournalEntries />
         </Box>
       </Modal>
