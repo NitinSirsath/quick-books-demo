@@ -13,12 +13,10 @@ import {
   Typography,
   Box,
   CircularProgress,
-  Grid,
   Chip,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import JournalEntries from "./JournalEntries";
-import Logo from "../assets/logo.png"; // Assuming you have saved the logo
 
 const initialPayrollData = [
   {
